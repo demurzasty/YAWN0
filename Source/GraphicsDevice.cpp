@@ -5,7 +5,7 @@ using GraphiscDeviceImpl = YAWN::GraphicsDeviceOpenGL;
 
 using namespace YAWN;
 
-Managed<GraphicsDevice> GraphicsDevice::Instance() {
+const Managed<GraphicsDevice>& GraphicsDevice::Instance() {
     static Managed<GraphicsDevice> instance = new GraphiscDeviceImpl();
 
     return instance;

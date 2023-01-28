@@ -5,10 +5,14 @@
 using namespace YAWN;
 
 int Application::Run() {
+    Managed<Settings> settings = Settings::Instance();
     Managed<Platform> platform = Platform::Instance();
     Managed<GraphicsDevice> graphicsDevice = GraphicsDevice::Instance();
     Managed<Scene> scene = Scene::Instance();
-    Managed<UI> ui = new UI();
+    Managed<MainLoop> mainLoop = MainLoop::Instance();
+
+    // Add mandatory services.
+    mainLoop->AddService(scene);
 
     Vertex2D vertices[] = {
         Vertex2D(Vector2(-1.0f, 1.0f), Vector2(0.0f, 0.0f), Color::White()),
@@ -34,11 +38,11 @@ int Application::Run() {
         float timeStep = float(currentTime - lastTime);
         lastTime = currentTime;
 
-        scene->Update(timeStep);
+        mainLoop->Update(timeStep);
 
         //graphicsDevice->PushPrimitives2D(texture->Id(), vertices, indices);
 
-        ui->ShowDemo();
+        // ui->ShowDemo();
 
         graphicsDevice->Present();
     }

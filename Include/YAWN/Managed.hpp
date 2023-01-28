@@ -9,12 +9,18 @@ namespace YAWN {
     public:
         Managed() = default;
 
-        Managed(TReference * reference)
+        Managed(TReference* reference)
             : _reference(reference) {
             Retain();
         }
 
-        Managed(const Managed<TReference>&managed)
+        template<typename TDerived>
+        Managed(const Managed<TDerived>& managed)
+            : _reference(managed.Get()) {
+            Retain();
+        }
+
+        Managed(const Managed<TReference>& managed)
             : _reference(managed._reference) {
             Retain();
         }

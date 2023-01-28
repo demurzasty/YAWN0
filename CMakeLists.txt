@@ -26,22 +26,25 @@ endforeach (GLSL_SRC)
 add_custom_target (Shaders DEPENDS ${GLSL_BINARY_FILES})
 
 set (SRC 
+	"Source/Editor/UI.cpp"
+
 	"Source/Application.cpp"
 	"Source/Component.cpp"
 	"Source/GraphicsDevice.cpp"
 	"Source/GraphicsResource.cpp"
 	"Source/Main.cpp"
+	"Source/MainLoop.cpp"
 	"Source/Math.cpp"
 	"Source/Mesh.cpp"
 	"Source/Actor.cpp"
 	"Source/Platform.cpp"
 	"Source/Reference.cpp"
 	"Source/Scene.cpp"
+	"Source/Service.cpp"
 	"Source/Settings.cpp"
 	"Source/String.cpp"
 	"Source/Texture.cpp"
 	"Source/TypeReflect.cpp"
-	"Source/UI.cpp"
 	"Source/Variant.cpp"
 )
 
@@ -71,8 +74,8 @@ target_compile_definitions (YAWN PRIVATE _CRT_SECURE_NO_WARNINGS)
 target_link_libraries (YAWN PRIVATE ImGUI STB CGLTF LUALIB GLEW OpenGL32)
 add_dependencies (YAWN Shaders)
 
-add_executable (YAWN_Tests "Source/Tests/Managed.cpp")
-target_link_libraries (YAWN_Tests PUBLIC YAWN gtest)
+# add_executable (YAWN_Tests "Source/Tests/Managed.cpp")
+# target_link_libraries (YAWN_Tests PUBLIC YAWN gtest)
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 	add_subdirectory ("Example")

@@ -15,10 +15,11 @@ Texture::~Texture() {
 }
 
 void Texture::Load(const String& path) {
-    stbi_uc* pixels = stbi_load(path.CString(), &_width, &_height, nullptr, STBI_rgb_alpha);
-    Assert(pixels);
+    int width, height;
+    stbi_uc* pixels = stbi_load(path.CString(), &width, &height, nullptr, STBI_rgb_alpha);
+    Assert(pixels); 
 
-    GraphicsDevice::Instance()->SetTextureData(_id, _width, _height, pixels);
+    SetData(width, height, pixels);
 
     stbi_image_free(pixels);
 }

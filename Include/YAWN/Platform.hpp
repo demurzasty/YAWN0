@@ -5,7 +5,7 @@
 namespace YAWN {
     class Platform : public Reference {
     public:
-        static Managed<Platform> Instance();
+        static const Managed<Platform>& Instance();
 
     public:
         virtual ~Platform() = default;

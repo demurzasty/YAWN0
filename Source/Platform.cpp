@@ -7,7 +7,7 @@ using PlatformImpl = YAWN::PlatformWin32;
 
 using namespace YAWN;
 
-Managed<Platform> Platform::Instance() {
+const Managed<Platform>& Platform::Instance() {
     static Managed<Platform> instance = new PlatformImpl();
 
     return instance;

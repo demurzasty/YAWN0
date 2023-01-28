@@ -1,8 +1,10 @@
 #include <YAWN/Scene.hpp>
 
+#include <stdio.h>
+
 using namespace YAWN;
 
-Managed<Scene> Scene::Instance() {
+const Managed<Scene>& Scene::Instance() {
     static Managed<Scene> instance = new Scene();
 
     return instance;
@@ -12,11 +14,23 @@ void Scene::Update(float timeStep) {
     Update(_root, timeStep);
 }
 
-void Scene::Update(Managed<Actor> actor, float timeStep) {
+void Scene::Input(const InputEvent& event) {
+    Input(_root, event);
+}
+
+void Scene::Update(const Managed<Actor>& actor, float timeStep) {
     actor->Update(timeStep);
 
     for (const Managed<Actor>& child : actor->Children()) {
         Update(child, timeStep);
+    }
+}
+
+void Scene::Input(const Managed<Actor>& actor, const InputEvent& event) {
+    actor->Input(event);
+
+    for (const Managed<Actor>& child : actor->Children()) {
+        Input(child, event);
     }
 }
 

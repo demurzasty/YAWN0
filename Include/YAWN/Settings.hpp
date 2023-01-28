@@ -11,17 +11,21 @@ namespace YAWN {
     public:
         Settings();
 
+        void SetLowProcessorModeEnabled(bool enabled);
+
+        bool IsLowProcessorModeEnabled() const;
+
         void SetWindowTitle(const String& title);
 
-        const String& GetWindowTitle();
+        const String& GetWindowTitle() const;
 
         void SetWindowFullscreenEnabled(bool enabled);
 
-        bool IsWindowFullscreenEnabled();
+        bool IsWindowFullscreenEnabled() const;
 
         void Set(const String& key, const Variant& value);
 
-        Variant& Get(const String& key);
+        const Variant& Get(const String& key) const;
 
     private:
         Map<String, Variant> _settings;

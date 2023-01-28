@@ -42,8 +42,6 @@ static void SetProcessDpiAware() {
 PlatformWin32::PlatformWin32() {
 	SetProcessDpiAware();
 
-	Managed<Settings> settings = Settings::Instance();
-
 	WNDCLASS wc{};
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = &WindowProc;
@@ -59,7 +57,7 @@ PlatformWin32::PlatformWin32() {
 	int32 screenWidth = GetDeviceCaps(screenDC, HORZRES);
 	int32 screenHeight = GetDeviceCaps(screenDC, VERTRES);
 
-	if (settings->IsWindowFullscreenEnabled()) {
+	if (_settings->IsWindowFullscreenEnabled()) {
 		windowWidth = screenWidth;
 		windowHeight = screenHeight;
 	}
@@ -73,14 +71,14 @@ PlatformWin32::PlatformWin32() {
 	rect.right = windowWidth;
 	rect.bottom = windowHeight;
 
-	const DWORD style = settings->IsWindowFullscreenEnabled() ?
+	const DWORD style = _settings->IsWindowFullscreenEnabled() ?
 		WS_VISIBLE | WS_POPUP :
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE;
 
 	int32 width = windowWidth;
 	int32 height = windowHeight;
 
-	if (settings->IsWindowFullscreenEnabled()) {
+	if (_settings->IsWindowFullscreenEnabled()) {
 		left = 0;
 		top = 0;
 		width = screenWidth;
@@ -92,12 +90,12 @@ PlatformWin32::PlatformWin32() {
 		}
 	}
 
-	_hwnd = CreateWindow("YAWN", settings->GetWindowTitle().CString(), style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
+	_hwnd = CreateWindow("YAWN", _settings->GetWindowTitle().CString(), style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
 	Assert(_hwnd);
 }
 
 PlatformWin32::~PlatformWin32() {
-	if (Settings::Instance()->IsWindowFullscreenEnabled()) {
+	if (_settings->IsWindowFullscreenEnabled()) {
 		ChangeDisplaySettings(nullptr, 0);
 	}
 
@@ -111,9 +109,16 @@ bool PlatformWin32::IsWindowOpen() const {
 
 void PlatformWin32::PollEvents() {
 	MSG message;
-	while (PeekMessage(&message, _hwnd, 0, 0, PM_REMOVE)) {
-		TranslateMessage(&message);
-		DispatchMessage(&message);
+	if (_settings->IsLowProcessorModeEnabled()) {
+		if (GetMessage(&message, _hwnd, 0, 0)) {
+			TranslateMessage(&message);
+			DispatchMessage(&message);
+		}
+	} else {
+		while (PeekMessage(&message, _hwnd, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&message);
+			DispatchMessage(&message);
+		}
 	}
 }
 
@@ -155,6 +160,42 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	if (platform) {
 		if (msg == WM_CLOSE) {
 			platform->Close();
+		}
+
+		switch (msg) {
+			case WM_LBUTTONDOWN: {
+				InputEvent event;
+				event.Type = InputEventType::MouseButton;
+				event.MouseButton.Position = Vector2(int16(LOWORD(lParam)), int16(HIWORD(lParam)));
+				event.MouseButton.Button = MouseButton::Left;
+				event.MouseButton.Pressed = true;
+				MainLoop::Instance()->Input(event);
+				break;
+			}
+			case WM_LBUTTONUP: {
+				InputEvent event;
+				event.Type = InputEventType::MouseButton;
+				event.MouseButton.Position = Vector2(int16(LOWORD(lParam)), int16(HIWORD(lParam)));
+				event.MouseButton.Button = MouseButton::Left;
+				event.MouseButton.Pressed = false;
+				MainLoop::Instance()->Input(event);
+				break;
+			}
+			case WM_MOUSEMOVE: {
+				// Extract the mouse local coordinates
+				float x = int16(LOWORD(lParam));
+				float y = int16(HIWORD(lParam));
+
+				// Get the client area of the window
+				RECT area;
+				GetClientRect(hwnd, &area);
+
+				InputEvent event;
+				event.Type = InputEventType::MouseMove;
+				event.MouseMove.Position = Vector2(x, y);
+				MainLoop::Instance()->Input(event);
+				break;
+			}
 		}
 	}
 

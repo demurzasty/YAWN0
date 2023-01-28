@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "Map.hpp"
+#include "Input.hpp"
 #include "Tuple.hpp"
 #include "Array.hpp"
 #include "String.hpp"
@@ -13,6 +14,8 @@ namespace YAWN {
     class Actor : public Reference {
     public:
         void Update(float timeStep);
+
+        void Input(const InputEvent& event);
 
         void AddChild(Managed<Actor> child);
 

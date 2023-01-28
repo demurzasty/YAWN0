@@ -8,3 +8,5 @@ add_library (ImGUI STATIC
     "imgui_widgets.cpp"
 )
 target_include_directories (ImGUI PUBLIC ".")
+target_compile_features (ImGUI PUBLIC cxx_std_17)
+

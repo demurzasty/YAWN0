@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "Reference.hpp"
+#include "Input.hpp"
+#include "Managed.hpp"
 
 namespace YAWN {
     class Component : public Reference {
@@ -20,6 +21,8 @@ namespace YAWN {
         Component& operator=(Component&&) = delete;
 
         virtual void Update(float timeStep);
+
+        virtual void Input(const InputEvent& event);
 
         Actor* Owner() const;
 

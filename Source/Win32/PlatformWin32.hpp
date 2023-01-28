@@ -2,6 +2,7 @@
 
 #include <YAWN/Platform.hpp>
 #include <YAWN/Settings.hpp>
+#include <YAWN/MainLoop.hpp>
 
 #include <Windows.h>
 
@@ -23,6 +24,8 @@ namespace YAWN {
         void Close();
 
     private:
+        Managed<Settings> _settings = Settings::Instance();
+
         HWND _hwnd = NULL;
         bool _open = true;
     };

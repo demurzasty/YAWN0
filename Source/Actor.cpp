@@ -9,6 +9,12 @@ void Actor::Update(float timeStep) {
     }
 }
 
+void Actor::Input(const InputEvent& event) {
+    for (auto&& pair : _components) {
+        pair.Second->Input(event);
+    }
+}
+
 void Actor::AddChild(Managed<Actor> child) {
     Assert(!child->_parent);
 

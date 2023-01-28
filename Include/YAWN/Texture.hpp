@@ -11,7 +11,7 @@ namespace YAWN {
 
         virtual void Load(const String& path) override;
 
-        virtual void SetData(int width, int height, const void* pixels);
+        void SetData(int width, int height, const void* pixels);
 
         int Width() const;
 

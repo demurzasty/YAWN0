@@ -16,7 +16,7 @@ namespace YAWN {
         static constexpr usize MaxIndexCount = 0x100000;
 
     public:
-        static Managed<GraphicsDevice> Instance();
+        static const Managed<GraphicsDevice>& Instance();
 
     public:
         virtual ~GraphicsDevice() = default;
